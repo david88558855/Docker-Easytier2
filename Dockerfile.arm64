@@ -1,17 +1,13 @@
 # 使用官方提供的基础镜像
-FROM alpine:latest
+FROM easytier/easytier:latest
 
 # 设置工作目录
 WORKDIR /app
 
-# 将压缩包复制到容器中
-COPY arm64/app.tar /app/
-
-# 解压压缩包
-RUN tar -xvf app.tar
-
-# 清理工作目录，减少镜像大小
-RUN rm app.tar
+# 设置时区为上海
+RUN apk add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone \
+    && apk del tzdata
 
 # 定义容器启动时执行的命令
-ENTRYPOINT ["/app/easytier-core"]
+ENTRYPOINT ["easytier-core"]
